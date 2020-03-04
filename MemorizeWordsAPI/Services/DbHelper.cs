@@ -33,17 +33,35 @@ namespace MemorizeWordsAPI.Services
         public String EnglishWord { get; set; }
         public String PhoneticSymbols { get; set; }
         public String ChineseMeaning { get; set; }
-        public String WordStatus { get; set; }
+        public int times { get; set; }
+        public bool time1 { get; set; }
+        public bool time2 { get; set; }
+        public bool time3 { get; set; }
+        public bool time4 { get; set; }
+        public bool time5 { get; set; }
+        public bool time6 { get; set; }
+        public bool time7 { get; set; }
+        public bool time8 { get; set; }
         public int WordListID { get; set; }
         public virtual WordList WordListIDNavigation { get; set; }
     }
-
+    public class Task
+    {
+        public int taskID { get; set; }
+        public DateTime date { get; set; }
+        public DateTime beginingTime { get; set; }
+        public DateTime endingTime { get; set; }
+        public int newWordNumber { get; set; }
+        public int reviewWordNumber { get; set; }
+        public virtual LearningSchedule ScheduleIDNavigation { get; set; }
+    }
     public class MWContext : DbContext
     {
         public MWContext(DbContextOptions<MWContext> options) : base(options) { }
         public DbSet<LearningSchedule> LearningSchedules { get; set; }
         public DbSet<WordList> WordLists { get; set; }
         public DbSet<Word> Words { get; set; }
+        public DbSet<Task> Tasks { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<LearningSchedule>().HasData(

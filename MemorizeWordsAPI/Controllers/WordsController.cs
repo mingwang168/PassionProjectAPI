@@ -27,6 +27,8 @@ namespace MemorizeWordsAPI.Controllers
             return await _context.Words.ToListAsync();
         }
 
+
+
         // GET: api/Words/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Word>> GetWord(int id)
@@ -97,6 +99,17 @@ namespace MemorizeWordsAPI.Controllers
             return word;
         }
 
+        [HttpDelete]
+        public async Task<ActionResult<Word>> DeleteAll()
+        {
+            var rows = from o in _context.Words select o;
+            foreach (var row in rows)
+            {
+                _context.Words.Remove(row);
+            }
+            _context.SaveChanges();
+            return NoContent();
+        }
         private bool WordExists(int id)
         {
             return _context.Words.Any(e => e.WordID == id);

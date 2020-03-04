@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using MemorizeWordsAPI.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace MemorizeWordsAPI.Controllers
 {
@@ -42,6 +43,55 @@ namespace MemorizeWordsAPI.Controllers
                 return NotFound();
             }
             return new ObjectResult(item);
+        }
+        // PUT: api/Tasks/5
+        [HttpPut("{id}")]
+        public async Task<IActionResult> PutWordList(int id, WordList wordList)
+        {
+            if (id != wordList.WordListID)
+            {
+                return BadRequest();
+            }
+
+            _context.Entry(wordList).State = EntityState.Modified;
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!WordListExists(id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+
+            return NoContent();
+        }
+
+        // DELETE: api/Tasks/5
+        [HttpDelete("{id}")]
+        public async Task<ActionResult<WordList>> DeleteWordList(int id)
+        {
+            var wordList = await _context.WordLists.FindAsync(id);
+            if (wordList == null)
+            {
+                return NotFound();
+            }
+
+            _context.WordLists.Remove(wordList);
+            await _context.SaveChangesAsync();
+
+            return wordList;
+        }
+        private bool WordListExists(int id)
+        {
+            return _context.WordLists.Any(e => e.WordListID == id);
         }
 
     }
