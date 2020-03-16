@@ -34,10 +34,10 @@ namespace MemorizeWordsAPI.Controllers
         // For example:
         // http://localhost:<port #>/api/todo/1
 
-        [HttpGet("{id}", Name = "GetWordList")]
-        public IActionResult GetById(long id)
+        [HttpGet("{userName}", Name = "GetWordList")]
+        public IActionResult GetByUserName(string userName)
         {
-            var item = _context.WordLists.FirstOrDefault(t => t.WordListID == id);
+            var item = _context.WordLists.FirstOrDefault(t => t.UserName == userName);
             if (item == null)
             {
                 return NotFound();
@@ -45,10 +45,10 @@ namespace MemorizeWordsAPI.Controllers
             return new ObjectResult(item);
         }
         // PUT: api/Tasks/5
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutWordList(int id, WordList wordList)
+        [HttpPut("{userName}")]
+        public async Task<IActionResult> PutWordList(string userName, WordList wordList)
         {
-            if (id != wordList.WordListID)
+            if (userName != wordList.UserName)
             {
                 return BadRequest();
             }
@@ -61,7 +61,7 @@ namespace MemorizeWordsAPI.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!WordListExists(id))
+                if (!WordListExists(userName))
                 {
                     return NotFound();
                 }
@@ -74,11 +74,30 @@ namespace MemorizeWordsAPI.Controllers
             return NoContent();
         }
 
-        // DELETE: api/Tasks/5
-        [HttpDelete("{id}")]
-        public async Task<ActionResult<WordList>> DeleteWordList(int id)
+        // POST: api/WordList/mingwang
+        [HttpPost]
+        public async Task<ActionResult<WordList>> PostWordList(WordList wordList)
         {
-            var wordList = await _context.WordLists.FindAsync(id);
+            //var l = _context.LearningSchedules.FindAsync(learningSchedule.UserName);
+            if (WordListExists(wordList.UserName))
+            {
+                _context.WordLists.Update(wordList);
+                await _context.SaveChangesAsync();
+                return wordList;
+            }
+            else
+            {
+                _context.WordLists.Add(wordList);
+                await _context.SaveChangesAsync();
+                return CreatedAtAction("GetWordList", new { userName = wordList.UserName }, wordList);
+            }
+        }
+
+        // DELETE: api/Tasks/5
+        [HttpDelete("{userName}")]
+        public async Task<ActionResult<WordList>> DeleteWordList(string userName)
+        {
+            var wordList = _context.WordLists.FirstOrDefault(e=>e.UserName==userName);
             if (wordList == null)
             {
                 return NotFound();
@@ -89,9 +108,9 @@ namespace MemorizeWordsAPI.Controllers
 
             return wordList;
         }
-        private bool WordListExists(int id)
+        private bool WordListExists(string userName)
         {
-            return _context.WordLists.Any(e => e.WordListID == id);
+            return _context.WordLists.Any(e => e.UserName == userName);
         }
 
     }

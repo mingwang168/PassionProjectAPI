@@ -28,10 +28,10 @@ namespace MemorizeWordsAPI.Controllers
         }
 
         // GET: api/LearningSchedules/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<LearningSchedule>> GetLearningSchedule(int id)
+        [HttpGet("{userName}")]
+        public async Task<ActionResult<LearningSchedule>> GetLearningSchedule(string userName)
         {
-            var learningSchedule = await _context.LearningSchedules.FindAsync(id);
+            var learningSchedule = _context.LearningSchedules.FirstOrDefault(e => e.UserName == userName);
 
             if (learningSchedule == null)
             {
@@ -42,10 +42,10 @@ namespace MemorizeWordsAPI.Controllers
         }
 
         // PUT: api/LearningSchedules/5
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutLearningSchedule(int id, LearningSchedule learningSchedule)
+        [HttpPut("{userName}")]
+        public async Task<IActionResult> PutLearningSchedule(string userName, LearningSchedule learningSchedule)
         {
-            if (id != learningSchedule.ScheduleID)
+            if (userName != learningSchedule.UserName)
             {
                 return BadRequest();
             }
@@ -58,7 +58,7 @@ namespace MemorizeWordsAPI.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!LearningScheduleExists(id))
+                if (!LearningScheduleExists(userName))
                 {
                     return NotFound();
                 }
@@ -75,17 +75,26 @@ namespace MemorizeWordsAPI.Controllers
         [HttpPost]
         public async Task<ActionResult<LearningSchedule>> PostLearningSchedule(LearningSchedule learningSchedule)
         {
-            _context.LearningSchedules.Add(learningSchedule);
-            await _context.SaveChangesAsync();
-
-            return CreatedAtAction("GetLearningSchedule", new { id = learningSchedule.ScheduleID }, learningSchedule);
+            //var l = _context.LearningSchedules.FindAsync(learningSchedule.UserName);
+            if (LearningScheduleExists(learningSchedule.UserName))
+            {
+                _context.LearningSchedules.Update(learningSchedule);
+                await _context.SaveChangesAsync(); 
+                return learningSchedule;
+            }
+            else
+            {
+                _context.LearningSchedules.Add(learningSchedule);
+                await _context.SaveChangesAsync();
+                return CreatedAtAction("GetLearningSchedule", new { userName = learningSchedule.UserName }, learningSchedule);
+            }
         }
 
         // DELETE: api/LearningSchedules/5
-        [HttpDelete("{id}")]
-        public async Task<ActionResult<LearningSchedule>> DeleteLearningSchedule(int id)
+        [HttpDelete("{userName}")]
+        public async Task<ActionResult<LearningSchedule>> DeleteLearningSchedule(string userName)
         {
-            var learningSchedule = await _context.LearningSchedules.FindAsync(id);
+            var learningSchedule = await _context.LearningSchedules.FindAsync(userName);
             if (learningSchedule == null)
             {
                 return NotFound();
@@ -97,9 +106,9 @@ namespace MemorizeWordsAPI.Controllers
             return learningSchedule;
         }
 
-        private bool LearningScheduleExists(int id)
+        private bool LearningScheduleExists(string userName)
         {
-            return _context.LearningSchedules.Any(e => e.ScheduleID == id);
+            return _context.LearningSchedules.Any(e => e.UserName == userName);
         }
     }
 }

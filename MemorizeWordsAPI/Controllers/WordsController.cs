@@ -21,27 +21,28 @@ namespace MemorizeWordsAPI.Controllers
         }
 
         // GET: api/Words
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<Word>>> GetWords()
+        [HttpGet("{userName}")]
+        public IEnumerable<Word> GetWords(string userName)
         {
-            return await _context.Words.ToListAsync();
+            IEnumerable<Word> wdsList = _context.Words.Where(w => w.UserName == userName);
+            return wdsList;
         }
 
 
 
-        // GET: api/Words/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<Word>> GetWord(int id)
-        {
-            var word = await _context.Words.FindAsync(id);
+        //// GET: api/Words/5
+        //[HttpGet("{id}")]
+        //public async Task<ActionResult<Word>> GetWord(int id)
+        //{
+        //    var word = await _context.Words.FindAsync(id);
 
-            if (word == null)
-            {
-                return NotFound();
-            }
+        //    if (word == null)
+        //    {
+        //        return NotFound();
+        //    }
 
-            return word;
-        }
+        //    return word;
+        //}
 
         // PUT: api/Words/5
         [HttpPut("{id}")]
@@ -84,28 +85,31 @@ namespace MemorizeWordsAPI.Controllers
         }
 
         // DELETE: api/Words/5
-        [HttpDelete("{id}")]
-        public async Task<ActionResult<Word>> DeleteWord(int id)
-        {
-            var word = await _context.Words.FindAsync(id);
-            if (word == null)
-            {
-                return NotFound();
-            }
+        //[HttpDelete("{id}")]
+        //public async Task<ActionResult<Word>> DeleteWord(int id)
+        //{
+        //    var word = await _context.Words.FindAsync(id);
+        //    if (word == null)
+        //    {
+        //        return NotFound();
+        //    }
 
-            _context.Words.Remove(word);
-            await _context.SaveChangesAsync();
+        //    _context.Words.Remove(word);
+        //    await _context.SaveChangesAsync();
 
-            return word;
-        }
+        //    return word;
+        //}
 
-        [HttpDelete]
-        public async Task<ActionResult<Word>> DeleteAll()
+        [HttpDelete("{userName}")]
+        public async Task<ActionResult<Word>> DeleteAll(string userName)
         {
             var rows = from o in _context.Words select o;
             foreach (var row in rows)
             {
+                if(row.UserName == userName)
+                {
                 _context.Words.Remove(row);
+                }
             }
             _context.SaveChanges();
             return NoContent();

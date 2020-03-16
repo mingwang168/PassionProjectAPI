@@ -16,6 +16,7 @@ namespace MemorizeWordsAPI.Services
         public int NumberOfDay { get; set; }
         public int WordListID { get; set; }
         public int DaysHaveLearned { get; set; }
+        public string UserName { get; set; }
         public virtual WordList WordListIDNavigation { get; set; }
     }
     public class WordList
@@ -24,6 +25,7 @@ namespace MemorizeWordsAPI.Services
         public int WordListID { get; set; }
         public String WordListName { get; set; }
         public int WordNumber { get; set; }
+        public string UserName { get; set; }
     }
 
     public class Word
@@ -43,6 +45,7 @@ namespace MemorizeWordsAPI.Services
         public bool time7 { get; set; }
         public bool time8 { get; set; }
         public int WordListID { get; set; }
+        public string UserName { get; set; }
         public virtual WordList WordListIDNavigation { get; set; }
     }
     public class Task
@@ -65,10 +68,10 @@ namespace MemorizeWordsAPI.Services
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<LearningSchedule>().HasData(
-                new { ScheduleID = 1, WordNumberPerDay = 20, NumberOfDay= 5, WordListID =1, DaysHaveLearned = 2 }
+                new { ScheduleID = 1, WordNumberPerDay = 20, NumberOfDay= 5, WordListID =1, DaysHaveLearned = 2,UserName = "mingwang" }
             );
             modelBuilder.Entity<WordList>().HasData(
-               new { WordListID = 1, WordListName = "A small word list for test", WordNumber = 100 }
+               new { WordListID = 1, WordListName = "A small word list for test", WordNumber = 100, UserName ="mingwang" }
 );
         }
     }

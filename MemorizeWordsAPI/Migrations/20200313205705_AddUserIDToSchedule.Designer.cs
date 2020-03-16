@@ -3,14 +3,16 @@ using System;
 using MemorizeWordsAPI.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace MemorizeWordsAPI.Migrations
 {
     [DbContext(typeof(MWContext))]
-    partial class MWContextModelSnapshot : ModelSnapshot
+    [Migration("20200313205705_AddUserIDToSchedule")]
+    partial class AddUserIDToSchedule
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -84,8 +86,6 @@ namespace MemorizeWordsAPI.Migrations
 
                     b.Property<string>("PhoneticSymbols");
 
-                    b.Property<string>("UserName");
-
                     b.Property<int>("WordListID");
 
                     b.Property<bool>("time1");
@@ -118,8 +118,6 @@ namespace MemorizeWordsAPI.Migrations
                     b.Property<int>("WordListID")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<string>("UserName");
-
                     b.Property<string>("WordListName");
 
                     b.Property<int>("WordNumber");
@@ -132,7 +130,6 @@ namespace MemorizeWordsAPI.Migrations
                         new
                         {
                             WordListID = 1,
-                            UserName = "mingwang",
                             WordListName = "A small word list for test",
                             WordNumber = 100
                         });
